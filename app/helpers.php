@@ -24,6 +24,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Session;
 use Stancl\Tenancy\Database\Models\Tenant;
 use Stancl\Tenancy\Database\TenantScope;
 use Stripe\Stripe;
@@ -439,9 +440,9 @@ if (! function_exists('getFaviconUrl')) {
         $img = 'assets/images/infyom.png';
 
         if (empty($appLogo)) {
+            static $setting;
             if (isAuth() && Auth::user()->hasRole(Role::ROLE_CLIENT)) {
-                /** @var Setting $setting */
-                static $setting;
+                /** @var Setting $setting */                
                 if ($setting === null) {
                     $setting = Setting::where('tenant_id', getClientAdminTenantId())->where('key', '=', 'favicon_icon')->withoutGlobalScope(new TenantScope())->first();
                     $userSetting = UserSetting::toBase()->pluck('value', 'key')->toArray();
