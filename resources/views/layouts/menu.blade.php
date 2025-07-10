@@ -30,7 +30,7 @@
         <a class="nav-link d-flex align-items-center py-3" aria-current="page"
             href="{{ route('subscription-plans.index') }}">
             <span class="menu-icon">
-                <i class="fas fa-rupee-sign pe-3"></i>
+                <i class="fas fa-wallet pe-3"></i>
             </span>
             <span class="aside-menu-title">{{ __('messages.subscription_plan') }}</span>
         </a>
