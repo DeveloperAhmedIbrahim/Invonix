@@ -6,6 +6,7 @@ use App\Models\InvoiceSetting;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\SuperAdminSetting;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -58,8 +59,11 @@ class SettingRepository extends BaseRepository
         return Setting::class;
     }
 
-    public function getSyncList()
+    public function getSyncList($tenantId = 0)
     {
+        if ($tenantId !== 0) {
+            return Setting::whereTenantId($tenantId)->pluck('value', 'key')->toArray();
+        } 
         return Setting::toBase()->pluck('value', 'key')->toArray();
     }
 
@@ -68,7 +72,7 @@ class SettingRepository extends BaseRepository
         return SuperAdminSetting::toBase()->pluck('value', 'key')->toArray();
     }
 
-    public function updateSetting($input)
+    public function updateSetting($input, $tenantId = 0)
     {
 
         if (isset($input['invoice_settings'])) {
@@ -90,12 +94,12 @@ class SettingRepository extends BaseRepository
             $input['payment_auto_approved'] = isset($input['payment_auto_approved']);
             if (isset($input['app_logo']) && !empty($input['app_logo'])) {
                 /** @var Setting $setting */
-                $setting = Setting::where('key', '=', 'app_logo')->first();
+                $setting = Setting::whereTenantId($tenantId)->where('key', '=', 'app_logo')->first();
                 $setting = $this->uploadSettingImages($setting, $input['app_logo']);
             }
             if (isset($input['favicon_icon']) && !empty($input['favicon_icon'])) {
                 /** @var Setting $setting */
-                $setting = Setting::where('key', '=', 'favicon_icon')->first();
+                $setting = Setting::whereTenantId($tenantId)->where('key', '=', 'favicon_icon')->first();
                 $setting = $this->uploadSettingImages($setting, $input['favicon_icon']);
             }
             if ($input['payment_auto_approved'] == 1) {
@@ -131,13 +135,13 @@ class SettingRepository extends BaseRepository
         }
 
         foreach ($settingInputArray as $key => $value) {
-            $setting = Setting::where('key', '=', $key)->where('tenant_id', getLoggedInUser()->tenant_id)->first();
+            $setting = Setting::where('key', '=', $key)->where('tenant_id', $tenantId)->first();
 
             if (empty($setting)) {
                 Setting::create([
                     'key' => $key,
                     'value' => $value,
-                    'tenant_id' => getLoggedInUser()->tenant_id ?? null,
+                    'tenant_id' => $tenantId ?? null,
                 ]);
 
                 continue;
@@ -149,11 +153,11 @@ class SettingRepository extends BaseRepository
         return true;
     }
 
-    public function editSettingsData()
+    public function editSettingsData($tenantId = 0)
     {
         $data = [];
         $data['timezones'] = $this->getTimezones();
-        $data['settings'] = $this->getSyncList();
+        $data['settings'] = $this->getSyncList($tenantId);
         $data['dateFormats'] = Setting::DateFormatArray;
         $data['currencies'] = getCurrencies();
         $data['templates'] = Setting::INVOICE__TEMPLATE_ARRAY;

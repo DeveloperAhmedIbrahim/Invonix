@@ -42,11 +42,27 @@
         class="nav-item position-relative mx-xl-3 mb-3 mb-xl-0 {{ !Request::is('super-admin/super-admins*') ? 'd-none' : '' }}">
         <a class="nav-link p-0 {{ Request::is('super-admin/super-admins*') ? 'active' : '' }}"
             href="{{ route('super-admins.index') }}">{{ __('messages.super_admins') }}</a>
-    </li>
+    </li> 
 
     <li class="nav-item position-relative mx-xl-3 mb-3 mb-xl-0 {{ !Request::is('super-admin/users*') ? 'd-none' : '' }}">
         <a class="nav-link p-0 {{ Request::is('super-admin/users*') ? 'active' : '' }}"
             href="{{ route('users.index') }}">{{ __('messages.users') }}</a>
+    </li>
+
+    <li class="nav-item position-relative mx-xl-3 mb-3 mb-xl-0 {{ !Request::is('super-admin/users*') ? 'd-none' : '' }}">
+        <a class="nav-link p-0 {{ isset($sectionName) ? ($sectionName == 'general' ? 'active' : '') : '' }}"
+            href="{{ route('users.settings', $userId ?? 0) }}">{{ __('messages.general') }}</a>
+    </li>
+
+    <li class="nav-item position-relative mx-xl-3 mb-3 mb-xl-0 {{ !Request::is('super-admin/users*') ? 'd-none' : '' }}">
+        <a class="nav-link p-0 {{ Request::is("super-admin/users/*/payment-gateways") ? 'active' : '' }}"
+            href="{{ route('users.payment-gateways', $userId ?? 0) }}">{{ __('messages.setting.payment-gateway') }}</a>
+    </li>
+
+    <li
+        class="nav-item position-relative mx-xl-3 mb-3 mb-xl-0 {{ !Request::is('super-admin/users*') ? 'd-none' : '' }}">
+        <a class="nav-link p-0 {{ Request::is("super-admin/users/*/invoice-settings") ? 'active' : '' }}"
+            href="{{ route('users.invoice-settings', $userId ?? 0) }}">{{ __('messages.setting.invoice_settings') }}</a>
     </li>
 
     <li

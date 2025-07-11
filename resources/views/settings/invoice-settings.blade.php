@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="alert alert-danger display-none hide" id="validationErrorsBox"></div>
-                {{ Form::open(['route' => ['settings.update'], 'method' => 'post']) }}
+                {{ Form::open(['route' => ['users.invoice-settings', $userId], 'method' => 'post']) }}
                 <div class="row">
                     <div class="form-group col-sm-6 mb-5">
                         <input type="hidden" name="invoice_settings" value="1">

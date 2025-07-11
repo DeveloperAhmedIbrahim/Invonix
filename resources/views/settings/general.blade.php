@@ -3,7 +3,7 @@
     @php $styleCss = 'style'; @endphp
     <div class="card">
         <div class="card-body">
-            {{ Form::open(['route' => ['settings.update'], 'method' => 'post', 'files' => true, 'id' => 'createSetting']) }}
+            {{ Form::open(['route' => ['users.settings', $userId], 'method' => 'post', 'files' => true, 'id' => 'createSetting']) }}
             <div class="alert alert-danger display-none hide" id="validationErrorsBox"></div>
             <div class="row">
                 <div class="form-group col-sm-4 mb-5">

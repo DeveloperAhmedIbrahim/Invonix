@@ -7,7 +7,7 @@
         @include('flash::message')
         <div class="card">
             <div class="card-body">
-                {{ Form::open(['route' => ['payment-gateway.store'], 'method' => 'post', 'files' => true, 'id' => 'createPaymentGateway']) }}
+                {{ Form::open(['route' => ['users.payment-gateways', $userId], 'method' => 'post', 'files' => true, 'id' => 'createPaymentGateway']) }}
                 <div class="alert alert-danger display-none hide" id="validationErrorsBox"></div>
                 <div class="row">
                     <div class="form-group col-sm-5 mb-5">

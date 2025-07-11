@@ -9,6 +9,9 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Client;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserSetting;
+use App\Repositories\PaymentGatewayRepository;
+use App\Repositories\SettingRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Exception;
@@ -30,13 +33,17 @@ class UserController extends AppBaseController
      * @var UserRepository
      */
     public $userRepository;
+    private $settingRepository;
+    private $paymentGatewayRepository;
 
     /**
      * UserController constructor.
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, SettingRepository $settingRepo, PaymentGatewayRepository $paymentGatewayRepo)
     {
         $this->userRepository = $userRepository;
+        $this->settingRepository = $settingRepo;
+        $this->paymentGatewayRepository = $paymentGatewayRepo;
     }
 
     public function index(): \Illuminate\View\View
@@ -241,5 +248,67 @@ class UserController extends AppBaseController
         $firstUser->client = getClient($firstUser->id);
 
         return $this->sendResponse($firstUser, 'User retrieved successfully.');
+    }
+
+    public function settings(Request $request, $id) 
+    {
+        $userId = $id;
+        $tenantId = User::find($id)->tenant_id;
+        if ($request->method() === 'GET')
+        {
+            $sectionName = 'general';
+            $data = UserSetting::pluck('value', 'key')->toArray();
+            $defaultSettings = $this->settingRepository->editSettingsData($tenantId);
+            return view("settings.general", compact('sectionName', 'data', 'userId'), $defaultSettings);
+        }
+        else if ($request->method() === 'POST')
+        {
+            $this->settingRepository->updateSetting($request->all(), $tenantId);
+            Flash::success(__('messages.flash.setting_updated'));
+
+            return redirect()->back();
+        }
+    }
+
+    public function paymentGateways(Request $request, $id) 
+    {
+        $userId = $id;
+        $tenantId = User::find($id)->tenant_id;
+        if ($request->method() === 'GET')
+        {
+            $sectionName = 'payment-gateway';
+            $paymentGateway = $this->paymentGatewayRepository->getSyncList($tenantId);
+            return view("settings.payment-gateway", compact('sectionName', 'paymentGateway', 'userId'));
+        }
+        else if ($request->method() === 'POST')
+        {
+            $input = $request->all();
+            try {
+                $this->paymentGatewayRepository->store($input, $tenantId);
+                Flash::success(__('messages.flash.setting_updated'));
+            } catch (Exception $exception) {
+                Flash::error($exception->getMessage());
+            }
+
+            return redirect()->back();
+        }
+    }
+
+    public function invoiceSettings(Request $request, $id) 
+    {
+        $userId = $id;
+        $tenantId = User::find($id)->tenant_id;
+        if ($request->method() === 'GET')
+        {
+            $settings = $this->settingRepository->getSyncList($tenantId);
+            return view('settings.invoice-settings', compact('settings', 'userId'));
+        }
+        else if ($request->method() === 'POST')
+        {
+            $this->settingRepository->updateSetting($request->all(), $tenantId);
+            Flash::success(__('messages.flash.setting_updated'));
+
+            return redirect()->back();
+        }        
     }
 }

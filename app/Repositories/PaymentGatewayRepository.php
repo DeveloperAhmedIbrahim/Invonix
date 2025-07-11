@@ -36,12 +36,12 @@ class PaymentGatewayRepository extends BaseRepository
         return Setting::class;
     }
 
-    public function getSyncList()
+    public function getSyncList($tenantId = 0)
     {
-        return Setting::where('tenant_id', Auth::user()->tenant_id)->pluck('value', 'key')->toBase();
+        return Setting::where('tenant_id', $tenantId)->pluck('value', 'key')->toBase();
     }
 
-    public function store($input): bool
+    public function store($input, $tenantId = 0): bool
     {
         $input['stripe_enabled'] = (! isset($input['stripe_enabled'])) ? 0 : 1;
         $input['paypal_enabled'] = (! isset($input['paypal_enabled'])) ? 0 : 1;
@@ -52,11 +52,11 @@ class PaymentGatewayRepository extends BaseRepository
         $inputArray = Arr::only($input, $this->availableKeys);
         foreach ($inputArray as $key => $value) {
             $value = $value ?? '';
-            $setting = Setting::where('tenant_id', Auth::user()->tenant_id)->where('key', '=', $key)->first();
+            $setting = Setting::where('tenant_id', $tenantId)->where('key', '=', $key)->first();
 
             if (empty($setting)) {
                 Setting::create([
-                    'tenant_id' => Auth::user()->tenant_id,
+                    'tenant_id' => $tenantId,
                     'key' => $key,
                     'value' => $value,
                 ]);

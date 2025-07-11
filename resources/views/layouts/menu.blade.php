@@ -93,14 +93,14 @@
         </a>
     </li>
 
-    <li class="nav-item {{ Request::is('admin/client*') ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Request::is('admin/client*') ? 'active' : '' }}">
         <a class="nav-link d-flex align-items-center py-3" aria-current="page" href="{{ route('clients.index') }}">
             <span class="menu-icon">
                 <i class="fas fa-user-alt pe-3"></i>
             </span>
             <span class="aside-menu-title">{{ __('messages.clients') }}</span>
         </a>
-    </li>
+    </li> --}}
 
     <li class="nav-item {{ Request::is('admin/categories*') ? 'active' : '' }}">
         <a class="nav-link d-flex align-items-center py-3" aria-current="page" href="{{ route('category.index') }}">
@@ -194,7 +194,7 @@
         </a>
     </li>
 
-    <li
+    {{-- <li
         class="nav-item {{ Request::is('admin/settings*', 'admin/currencies*', 'admin/payment-gateway*', 'admin/invoice-settings*') ? 'active' : '' }}">
         <a class="nav-link d-flex align-items-center py-3" aria-current="page" href="{{ route('settings.edit') }}">
             <span class="menu-icon">
@@ -202,7 +202,7 @@
             </span>
             <span class="aside-menu-title">{{ __('messages.settings') }}</span>
         </a>
-    </li>
+    </li> --}}
 @endrole
 
 @role('client')

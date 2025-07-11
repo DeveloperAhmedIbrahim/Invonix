@@ -206,7 +206,8 @@ return [
         'scan_to_pay' => 'Scan To Pay',
         'unlimited' => 'Unlimited',
         'days' => 'Days',
-        'attach_files' => 'Attach Files'
+        'attach_files' => 'Attach Files',
+        'settings' => 'Settings'
     ],
 
     'user' => [

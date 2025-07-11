@@ -201,23 +201,11 @@ Route::prefix('admin')->middleware(['auth', 'xss', 'role:admin', 'check_subscrip
     Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
     Route::post('invoice-settings', [SettingController::class, 'invoiceUpdate'])->name('invoice-settings.settings');
-    Route::get(
-        'invoice-template/{key}',
-        [SettingController::class, 'editInvoiceTemplate']
-    )->name('invoice-template.edit');
+    Route::get('invoice-template/{key}', [SettingController::class, 'editInvoiceTemplate'])->name('invoice-template.edit');
     Route::get('invoice-settings', [SettingController::class, 'invoiceSettings'])->name('settings.invoice-settings');
     //invoice template
-    Route::get(
-        'template-setting',
-        [InvoiceTemplateController::class, 'invoiceTemplateView']
-    )->name('invoiceTemplate');
-    Route::post(
-        'change-invoice-template',
-        [
-            InvoiceTemplateController::class, 'invoiceTemplateUpdate',
-        ]
-    )->name('invoiceTemplate.update');
-
+    Route::get('template-setting', [InvoiceTemplateController::class, 'invoiceTemplateView'])->name('invoiceTemplate');
+    Route::post('change-invoice-template',[InvoiceTemplateController::class, 'invoiceTemplateUpdate',])->name('invoiceTemplate.update');
     // Currency
     Route::resource('currencies', CurrencyController::class);
 
@@ -329,6 +317,9 @@ Route::prefix('super-admin')->middleware(['auth', 'xss', 'role:super_admin'])->g
 
     // User route
     Route::resource('users', UserController::class);
+    Route::match(['GET', 'POST'], 'users/{id}/settings', [UserController::class, 'settings'])->name('users.settings');
+    Route::match(['GET', 'POST'], 'users/{id}/payment-gateways', [UserController::class, 'paymentGateways'])->name('users.payment-gateways');
+    Route::match(['GET', 'POST'], 'users/{id}/invoice-settings', [UserController::class, 'invoiceSettings'])->name('users.invoice-settings');
 
     Route::post('users/{id}/is-verified', [UserController::class, 'isVerified'])->name('users.verified');
     Route::post(

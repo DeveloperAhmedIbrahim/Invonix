@@ -73,6 +73,7 @@ class UserTable extends LivewireTableComponent
                     return view('livewire.action-button')
                         ->withValue([
                             'edit-route' => route('users.edit', $row->id),
+                            'settings-route' => route('users.settings', $row->id),
                             'data-id' => $row->id,
                             'data-delete-id' => 'user-delete-btn',
                         ]);

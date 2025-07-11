@@ -13,6 +13,14 @@
             <i class="fa-solid fa-pen-to-square"></i>
         </a>
     @endif
+
+    @if(isset($value['settings-route']))
+        <a href="{{ $value['settings-route'] }}" class="btn px-2 text-primary fs-3 py-2"
+           title="{{__('messages.common.settings') }}"
+           data-bs-toggle="tooltip">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+    @endif
     <a href="javascript:void(0)" data-id="{{ $value['data-id'] }}" title="{{ __('messages.common.delete') }}"
        class="{{$value['data-delete-id']}} btn px-2 text-danger fs-3 py-2"
        data-bs-toggle="tooltip" data-turbolinks="false">
